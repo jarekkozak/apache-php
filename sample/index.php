@@ -50,5 +50,7 @@
 		<?php
 	}
 	?>
+	<br/>
+	<?= phpinfo() ?>
 </body>
 </html>
