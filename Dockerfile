@@ -6,6 +6,7 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -yq install \
         curl \
         apache2 \
+	apache2-utils \
 	git \
 	mcrypt \
 	nodejs \
@@ -46,6 +47,12 @@ RUN a2enmod authn_file
 RUN a2enmod authz_user
 RUN a2ensite default-ssl.conf
 
+RUN pear channel-update pear.php.net
+RUN pear upgrade-all
+RUN pear install MDB2-2.5.0b5
+RUN pear install MDB2_Driver_mysql-1.5.0b4
+RUN pear install MDB2_Driver_mysqli-1.5.0b4
+
 #COPY php.ini /etc/php5/apache2/php.ini
 #COPY php.ini.ucf-dist /etc/php5/apache2/php.ini.ucf-dist
 
@@ -59,11 +66,13 @@ RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
 #app source if needed
 RUN mkdir /source
 
+RUN mkdir  /php5conf.d
+
 #ADD sample/ /app
 ADD sample/ /app
 
 # Add VOLUMEs to allow backup of config and application
-VOLUME  ["/app","/etc/apache2/sites-enabled","/source"]
+VOLUME  ["/app","/etc/apache2/sites-enabled","/source","/php5conf.d"]
 
 EXPOSE 80
 WORKDIR /app
